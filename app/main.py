@@ -1,3 +1,4 @@
+import ast
 import json
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,7 +12,11 @@ app = FastAPI(
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+     allow_origins=[
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+        "https://truthgrid.onrender.com"
+    ],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -29,9 +34,8 @@ def health_check():
 async def researching(query: ResearchIn):
     response = graph_agent.invoke({"main_task": query.main_task})
     content = response.content if hasattr(response, "content") else str(response)
-    draft_content = content.split("draft': '")[1]
-    draft = draft_content.split("', 'critique_notes': 'AP")[0]
-
+    draft_json = ast.literal_eval(content)
+    draft = draft_json.get("draft", "")
     if not draft:
         raise HTTPException(
             status_code=status.HTTP_204_NO_CONTENT,
@@ -40,5 +44,5 @@ async def researching(query: ResearchIn):
 
     
     return {
-        "draft": draft
+        "draft": draft.strip()
     }

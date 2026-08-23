@@ -223,7 +223,7 @@ def create_writer_chain():
 
         try:
             response = _call_llm(writer_llm, prompt)
-            content = response.content if hasattr(response, "content") else str(response)
+            content = response.content # if hasattr(response, "content") else str(response)
             return content if content else "Draft in progress ..."
         
         except Exception as e:

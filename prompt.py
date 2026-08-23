@@ -82,6 +82,4 @@ Evaluate the draft based on:
 Provide tour evaluation:
 - If the draft is satisfactory (minor issues are okay), respond with: "APPROVED - [brief positive comment]"
 - If the draft need improvement, provide specific, actionable feedback for revision
-
-Your response: 
 """
