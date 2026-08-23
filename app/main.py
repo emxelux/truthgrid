@@ -20,13 +20,15 @@ def health_check():
 async def researching(query: ResearchIn):
     response = graph_agent.invoke({"main_task": query.main_task})
     content = response.content if hasattr(response, "content") else str(response)
-    draft = content.split("draft")[1]
+    draft = content.split("draft': '")[1]
+    
     if not draft:
         raise HTTPException(
             status_code=status.HTTP_204_NO_CONTENT,
             detail = "No Draft found"
         )
 
+    
     return {
         "draft": draft
     }
