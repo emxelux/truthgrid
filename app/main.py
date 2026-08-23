@@ -1,5 +1,6 @@
 import json
 from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from graph import graph_agent
 from .schema import ResearchIn, ResearchOut
 
@@ -8,11 +9,19 @@ app = FastAPI(
     description="A Multi agent AI Research agent",
     version="0.0.1"
 )
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def health_check():
     return {"response": "The API is live and working correctly"}
+
+
 
 
 
@@ -21,7 +30,7 @@ async def researching(query: ResearchIn):
     response = graph_agent.invoke({"main_task": query.main_task})
     content = response.content if hasattr(response, "content") else str(response)
     draft = content.split("draft': '")[1]
-    
+
     if not draft:
         raise HTTPException(
             status_code=status.HTTP_204_NO_CONTENT,
